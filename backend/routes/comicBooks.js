@@ -16,5 +16,7 @@ router.post('/',checkManagerRole,comicBooksController.createComicBook);
 //ROUTE - update comic book by id
 router.put('/:id',comicBooksController.updateComicBook);
 
+//ROUTE - delete comic book by id
+router.delete('/:id',comicBooksController.deleteComicBook);
 
 module.exports = router;
