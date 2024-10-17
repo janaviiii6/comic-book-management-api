@@ -1,4 +1,4 @@
-const { ComicBook } = require('../models');
+const { ComicBook, User } = require('../models');
 
 const comicBookController = {
     
@@ -28,6 +28,52 @@ const comicBookController = {
         } catch(err) {
             console.error("Error fetching comic book by id:",err);
             res.status(500).json({ err: 'Failed to fetch comic book by id' });
+        }
+    },
+
+    //Create/Add comic book
+    createComicBook: async(req,res) =>{
+        const { 
+            book_name, 
+            author_name, 
+            year_of_publication, 
+            price, 
+            discount, 
+            number_of_pages, 
+            book_condition, 
+            description, 
+            category, 
+            user_id,
+        } = req.body;
+        console.log(req.body);
+
+        //Validate required fields
+        if(!book_name || !author_name || !year_of_publication || !price || !number_of_pages || !user_id) {
+            return res.status(400).json({ error: 'Missing required fields.' });
+        }
+
+        try{
+            //Create comic book
+            const newComicBook = await ComicBook.create({
+                book_name, 
+                author_name, 
+                year_of_publication, 
+                price, 
+                discount, 
+                number_of_pages, 
+                book_condition, 
+                description, 
+                category, 
+                user_id 
+            });
+            res.status(201).json({
+                message: 'Successfully created record of comic book',
+                data: newComicBook,
+            });
+        
+        } catch(err) {
+            console.error("Error creating book:",err);
+            res.status(500).json({ err: 'Failed to create comic book' });
         }
     }
 }
