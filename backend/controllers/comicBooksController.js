@@ -75,6 +75,56 @@ const comicBookController = {
             console.error("Error creating book:",err);
             res.status(500).json({ err: 'Failed to create comic book' });
         }
+    },
+
+    updateComicBook: async(req,res) => {
+        const comicBookId = req.params.id;
+
+        const {
+            book_name, 
+            author_name, 
+            year_of_publication, 
+            price, 
+            discount, 
+            number_of_pages, 
+            book_condition, 
+            description, 
+            category, 
+        } = req.body;
+        console.log(req.body);
+
+        try{
+            //Fetch comic book by id
+            const comicBook = await ComicBook.findByPk(comicBookId);
+            console.log(comicBookId);
+
+            if(!comicBook) {
+                return res.status(404).json({
+                    error: `Comic book with id: ${comicBookId} not found`
+                });
+            }
+
+            //Update comic book details
+            const updatedComicBook = await comicBook.update({
+                book_name, 
+                author_name, 
+                year_of_publication, 
+                price, 
+                discount, 
+                number_of_pages, 
+                book_condition, 
+                description, 
+                category,
+            });
+
+            res.status(200).json({
+                message: 'Comic book updated successfully.',
+                comicBook: updatedComicBook,
+            });
+        } catch(err) {
+            console.error("Error updating comic book:",err);
+            res.status(500).json({ error: 'Failed to update comic book' });
+        }
     }
 }
 
