@@ -9,5 +9,8 @@ router.get('/',comicBooksController.getAllComicBooks);
 //ROUTE - get a single comic book details
 router.get('/:id',comicBooksController.getComicBookById);
 
+//ROUTE - create comic book 
+router.post('/',comicBooksController.createComicBook);
+
 
 module.exports = router;
