@@ -4,8 +4,34 @@ const comicBookController = {
     
     // Fetch all comic book list
     getAllComicBooks: async (req,res) => {
+        const { book,author,year,price,condition,category } = req.query;
+        // console.log(req.query);
+        const whereClause = {};
+
+        if(book) {
+            whereClause.book_name = book;
+        }
+        if(author){
+            whereClause.author_name = author;
+        }
+        if(year){
+            whereClause.year_of_publication = year;
+        }
+        if(price){
+            whereClause.price = price;
+        }
+        if(condition){
+            whereClause.book_condition = condition;
+        }
+        if(category){
+            whereClause.category = category;
+        }
+
+
         try{
-            const comicBooks = await ComicBook.findAll();
+            const comicBooks = await ComicBook.findAll({
+                where: whereClause,
+            });
             res.json(comicBooks);
         } catch(err) {
             console.error("Error fetching comic books:", err);
