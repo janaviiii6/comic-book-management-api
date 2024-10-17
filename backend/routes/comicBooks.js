@@ -1,5 +1,6 @@
 const express = require('express');
 const comicBooksController  = require('../controllers/comicBooksController');
+const checkManagerRole = require('../middleware/checkManagerRole');
 const router = express.Router();
 
 
@@ -10,7 +11,7 @@ router.get('/',comicBooksController.getAllComicBooks);
 router.get('/:id',comicBooksController.getComicBookById);
 
 //ROUTE - create comic book 
-router.post('/',comicBooksController.createComicBook);
+router.post('/',checkManagerRole,comicBooksController.createComicBook);
 
 
 module.exports = router;
