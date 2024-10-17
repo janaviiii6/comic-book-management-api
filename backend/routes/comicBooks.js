@@ -13,5 +13,8 @@ router.get('/:id',comicBooksController.getComicBookById);
 //ROUTE - create comic book 
 router.post('/',checkManagerRole,comicBooksController.createComicBook);
 
+//ROUTE - update comic book by id
+router.put('/:id',comicBooksController.updateComicBook);
+
 
 module.exports = router;
