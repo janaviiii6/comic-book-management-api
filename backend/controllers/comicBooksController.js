@@ -4,7 +4,7 @@ const comicBookController = {
     
     // Fetch all comic book list
     getAllComicBooks: async (req,res) => {
-        const { book,author,year,price,condition,category } = req.query;
+        const { book,author,year,price,condition,category,sortBy,order,page=1,limit=10 } = req.query;
         // console.log(req.query);
         const whereClause = {};
 
@@ -27,12 +27,30 @@ const comicBookController = {
             whereClause.category = category;
         }
 
+        const validSortFields = ['book_name','author_name','year_of_publication','price','book_condition','category'];
+        if(sortBy && !validSortFields.includes(sortBy)){
+            return res.status(400).json({ error: `Invalid sort field: ${sortBy}` });   
+        }
+
+        const orderBy = [];
+        if(sortBy){
+            orderBy.push([sortBy,order ? order.toUpperCase() : 'ASC'])
+        }
 
         try{
-            const comicBooks = await ComicBook.findAll({
+            const comicBooks = await ComicBook.findAndCountAll({
                 where: whereClause,
+                order: orderBy,
+                limit: parseInt(limit,10),
+                offset: (page-1) * limit
             });
-            res.json(comicBooks);
+            res.status(200).json({
+                message: 'Successfully fetched all comic book',
+                data: comicBooks.rows,
+                total: comicBooks.count,
+                page,
+                totalPages: Math.ceil(comicBooks.count / limit),
+            });
         } catch(err) {
             console.error("Error fetching comic books:", err);
             res.status(500).json({ err: 'Failed to fetch comic books' });
