@@ -47,11 +47,6 @@ const comicBookController = {
         } = req.body;
         console.log(req.body);
 
-        //Validate required fields
-        if(!book_name || !author_name || !year_of_publication || !price || !number_of_pages || !user_id) {
-            return res.status(400).json({ error: 'Missing required fields.' });
-        }
-
         try{
             //Create comic book
             const newComicBook = await ComicBook.create({
@@ -72,6 +67,11 @@ const comicBookController = {
             });
         
         } catch(err) {
+            //Handle Sequelize validation errors
+            if(err.name === 'SequelizeValidationError') {
+                const errors = err.errors.map(e => e.message);
+                return res.status(400).json({ errors });
+            }
             console.error("Error creating book:",err);
             res.status(500).json({ err: 'Failed to create comic book' });
         }
@@ -122,6 +122,11 @@ const comicBookController = {
                 comicBook: updatedComicBook,
             });
         } catch(err) {
+            //Handle Sequelize validation errors
+            if(err.name === 'SequelizeValidationError') {
+                const errors = err.errors.map(e => e.message);
+                return res.status(400).json({ errors });
+            }
             console.error("Error updating comic book:",err);
             res.status(500).json({ error: 'Failed to update comic book' });
         }
