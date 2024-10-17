@@ -125,6 +125,28 @@ const comicBookController = {
             console.error("Error updating comic book:",err);
             res.status(500).json({ error: 'Failed to update comic book' });
         }
+    },
+
+    deleteComicBook: async(req,res) => {
+        const comicBookId = req.params.id;
+        console.log(comicBookId);
+
+        try{
+            const comicBook = await ComicBook.findByPk(comicBookId);
+            if(!comicBook)
+                return res.status(404).json({ error:  `Comic book with id: ${comicBookId} not found` });
+
+            await comicBook.destroy();
+
+            res.status(200).json({
+                message: 'Comic book deleted successfully.'
+            });
+        }catch(err){
+            console.error("Error deleting comic book:",error);
+            res.status(500).json({
+                error: 'Failed to delete comci book.'
+            });
+        }
     }
 }
 
